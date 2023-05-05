@@ -1,15 +1,21 @@
 pub mod euler;
-pub use crate::euler::problem_1::{multiples_of3and5};
-
-
-//#[macro_use] extern crate itertools;
-
+pub use crate::euler::problemss_100::*;
 
 fn main() {
-    let test_cases = [10, 49, 1000, 8456, 19564];
-    for n in test_cases {
-        println!("Result for {} is {}", n, multiples_of3and5(n));
-    }
 }
 
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn problem_1() {
+        assert_eq!(multiples_of3and5(10), 23);
+        assert_eq!(multiples_of3and5(49), 543);
+        assert_eq!(multiples_of3and5(1000), 233168);
+        assert_eq!(multiples_of3and5(8456), 16687353);
+        assert_eq!(multiples_of3and5(19564), 89301183);
+    }
+}
 
