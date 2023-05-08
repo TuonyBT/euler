@@ -2,7 +2,9 @@ pub mod euler;
 pub use crate::euler::problemss_100::*;
 
 fn main() {
-    println!("{}", fibo_even_sum(34i32));
+    for n in 0..12 {
+//        println!("{} {} {}", n, binet(n), fibo_even_sum(binet(n)));
+    }
 }
 
 
