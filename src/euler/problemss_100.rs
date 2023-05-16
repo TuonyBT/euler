@@ -1,4 +1,5 @@
-use std::collections::{BTreeMap};
+use itertools::Itertools;
+use std::collections::{BTreeMap, BTreeSet};
 
 // Problem 1: sum of numbers less than n which are multiples of 3 or 5
 
@@ -113,3 +114,74 @@ pub fn sieve_of_eratothsenes(x: usize) -> Vec<usize> {
     primes
 
 }
+
+// Problem 4: largest palindromic number which is the product of two 3-digit numbers
+
+pub fn largest_palindromic(n: usize) -> usize {
+
+    let out_len = n - 1;
+    let ndfs = n_digit_factors(n as i32);
+    let result = 0_usize;
+
+
+    for p in palin_ints(out_len as usize) {
+        let ords = p.iter().enumerate().map(|(idx, &z)| z * 10_i32.pow(p.len() as u32 - idx as u32 - 1) ).sum::<i32>();
+
+        for ndf in &ndfs {
+            if ords % ndf == 0 && ndfs.contains(&(ords / ndf))  {
+                println!("factors {} {}", ndf, ords / ndf);
+                return ords as usize
+
+            }
+        }
+    }
+    result
+}
+
+fn palin_ints(stem_length: usize) -> Vec::<Vec<i32>> {
+
+    let mut palindromes = Vec::<Vec<i32>>::new();
+
+    for even in [true, false].iter() {
+        for stem in vec![(0..10).rev(); stem_length].into_iter().multi_cartesian_product() {
+            if stem[0] == 0 {continue}
+            for inner in (0i32..10).rev() {
+                let mut p = stem.clone();
+                p.push(inner);
+                if even == &true {
+                    p.push(inner);
+                }
+                for e in stem.iter().rev() {
+                    p.push(*e);
+                }
+                palindromes.push(p);
+            }
+        }
+    }
+
+    palindromes
+}
+
+pub fn n_digit_factors(n: i32) -> Vec<i32> {
+    let mut facs = BTreeSet::<i32>::new(); 
+    let mut mults = BTreeSet::<i32>::new(); 
+
+    let low = 10i32.pow(n as u32 -1);
+    let hi = low * 9;
+    for i in 0..hi {
+        facs.insert(low + i);
+    }
+
+    for j in 2..10 {
+        for i in 0..low {
+            let lij = (low + i) * j;
+            if lij >= low * 10 {break}
+            for m in [1, 2, 3, 5, 7] {
+                if lij * m >= low * 10 {break}
+                mults.insert(lij * m);
+            }
+        }
+    }
+    facs.difference(&mults).map(|&z| z).collect::<Vec<i32>>()
+}
+

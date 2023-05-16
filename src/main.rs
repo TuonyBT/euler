@@ -2,8 +2,8 @@ pub mod euler;
 pub use crate::euler::problemss_100::*;
 
 fn main() {
-    for n in 1..50 {
-        println!("{} {}", n, largest_prime_factor(n));
+    for n in 2..4 {
+        println!("{} {}", n, largest_palindromic(n));
     }
 }
 
