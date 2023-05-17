@@ -1,5 +1,5 @@
 use itertools::Itertools;
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::{BTreeMap};
 
 // Problem 1: sum of numbers less than n which are multiples of 3 or 5
 
@@ -119,29 +119,35 @@ pub fn sieve_of_eratothsenes(x: usize) -> Vec<usize> {
 
 pub fn largest_palindromic(n: usize) -> usize {
 
+    // The product of 2 n-digit numbers has 2(n-1) + x digits, where x is 1 or 2
+    // Therefore the palindrome must have two ends of length n-1 and either one middle digit or two identical middle digits 
     let out_len = n - 1;
-    let ndfs = n_digit_factors(n as i32);
-    let result = 0_usize;
 
-
+    // build a palindromic vector of digits that has the appropriate length
     for p in palin_ints(out_len as usize) {
+
+    // convert this vector into an integer and find its square root
         let ords = p.iter().enumerate().map(|(idx, &z)| z * 10_i32.pow(p.len() as u32 - idx as u32 - 1) ).sum::<i32>();
+        let st = (ords as f64).powf(0.5) as i32 + 1;
 
-        for ndf in &ndfs {
-            if ords % ndf == 0 && ndfs.contains(&(ords / ndf))  {
-                println!("factors {} {}", ndf, ords / ndf);
+    // test all possible factors from sqrt down: at least one factor must be less than sqrt
+        for ndf in (1..st).rev() {
+
+    // is the cofactor an integer of the correct number of digits?
+            if ords % ndf == 0 && ords / ndf < 10_i32.pow(n as u32) && ords / ndf >= 10_i32.pow(out_len as u32) {
                 return ords as usize
-
             }
         }
     }
-    result
+    0
 }
 
-fn palin_ints(stem_length: usize) -> Vec::<Vec<i32>> {
+// build a palindromic vector of digits that has a given stem length
+pub fn palin_ints(stem_length: usize) -> Vec::<Vec<i32>> {
 
     let mut palindromes = Vec::<Vec<i32>>::new();
 
+    // even and odd lengths allow for one or two identical middle digits
     for even in [true, false].iter() {
         for stem in vec![(0..10).rev(); stem_length].into_iter().multi_cartesian_product() {
             if stem[0] == 0 {continue}
@@ -151,37 +157,10 @@ fn palin_ints(stem_length: usize) -> Vec::<Vec<i32>> {
                 if even == &true {
                     p.push(inner);
                 }
-                for e in stem.iter().rev() {
-                    p.push(*e);
-                }
+                p.extend(stem.iter().rev());
                 palindromes.push(p);
             }
         }
     }
-
     palindromes
 }
-
-pub fn n_digit_factors(n: i32) -> Vec<i32> {
-    let mut facs = BTreeSet::<i32>::new(); 
-    let mut mults = BTreeSet::<i32>::new(); 
-
-    let low = 10i32.pow(n as u32 -1);
-    let hi = low * 9;
-    for i in 0..hi {
-        facs.insert(low + i);
-    }
-
-    for j in 2..10 {
-        for i in 0..low {
-            let lij = (low + i) * j;
-            if lij >= low * 10 {break}
-            for m in [1, 2, 3, 5, 7] {
-                if lij * m >= low * 10 {break}
-                mults.insert(lij * m);
-            }
-        }
-    }
-    facs.difference(&mults).map(|&z| z).collect::<Vec<i32>>()
-}
-

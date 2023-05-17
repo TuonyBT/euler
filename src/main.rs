@@ -2,8 +2,8 @@ pub mod euler;
 pub use crate::euler::problemss_100::*;
 
 fn main() {
-    for n in 2..4 {
-        println!("{} {}", n, largest_palindromic(n));
+    for n in 3..4 {
+
     }
 }
 
@@ -42,5 +42,12 @@ mod tests {
         assert_eq!(largest_prime_factor(13195), 29);
         assert_eq!(largest_prime_factor(600851475143), 6857);
     }
+
+    #[test]
+    fn problem_4() {
+        assert_eq!(largest_palindromic(2), 9009);
+        assert_eq!(largest_palindromic(3), 906609);
+    }
+
 }
 
