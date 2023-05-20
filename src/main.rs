@@ -2,8 +2,7 @@ pub mod euler;
 pub use crate::euler::problemss_100::*;
 
 fn main() {
-    for n in 3..4 {
-
+    for n in 10..11 {
     }
 }
 
@@ -47,6 +46,15 @@ mod tests {
     fn problem_4() {
         assert_eq!(largest_palindromic(2), 9009);
         assert_eq!(largest_palindromic(3), 906609);
+    }
+
+    #[test]
+    fn problem_5() {
+        assert_eq!(smallest_multiple(5), 60);
+        assert_eq!(smallest_multiple(7), 420);
+        assert_eq!(smallest_multiple(10), 2520);
+        assert_eq!(smallest_multiple(13), 360360);
+        assert_eq!(smallest_multiple(20), 232792560);
     }
 
 }

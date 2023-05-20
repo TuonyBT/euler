@@ -1,5 +1,5 @@
 use itertools::Itertools;
-use std::collections::{BTreeMap};
+use std::collections::{BTreeMap, BTreeSet};
 
 // Problem 1: sum of numbers less than n which are multiples of 3 or 5
 
@@ -99,6 +99,8 @@ pub fn largest_prime_factor(n: usize) -> usize {
 
 pub fn sieve_of_eratothsenes(x: usize) -> Vec<usize> {
     let mut sieve = vec![true; x + 1];
+    sieve[0] = false;
+    sieve[1] = false;
     let mut lp: usize = 2;
     while lp <= (x as f64).sqrt().floor() as usize {
         let fnp = lp.pow(2);
@@ -135,7 +137,7 @@ pub fn largest_palindromic(n: usize) -> usize {
 
     // is the cofactor an integer of the correct number of digits?
             if ords % ndf == 0 && ords / ndf < 10_i32.pow(n as u32) && ords / ndf >= 10_i32.pow(out_len as u32) {
-                return ords as usize
+                return ords as usize;
             }
         }
     }
@@ -163,4 +165,39 @@ pub fn palin_ints(stem_length: usize) -> Vec::<Vec<i32>> {
         }
     }
     palindromes
+}
+
+// Problem 5: smallest multiple of all numbers up to and including n
+
+pub fn smallest_multiple(n: usize) -> usize {
+
+    let u = (2..(n + 1)).collect::<BTreeSet<usize>>();
+    let p = sieve_of_eratothsenes(n).into_iter().collect::<BTreeSet<usize>>();
+    let c = u.difference(&p).collect::<BTreeSet<&usize>>();
+
+    let mut prime_coeffs = p.iter().map(|&z| (z, 1usize)).collect::<BTreeMap<usize, usize>>();
+    println!("Compound numbers in range of interest: {:?}", c);
+
+
+    for cp in c.into_iter() {
+        let mut prime_factors = BTreeMap::<usize, usize>::new();
+        let mut m = *cp;
+        for fact in p.iter() {
+            while m / fact * fact == m {
+                m /= fact;
+                *prime_factors.entry(*fact).or_insert(0) += 1; 
+            }
+        }
+        println!("Compound number {} has prime factors: {:?}", cp, prime_factors);
+        for (k, v) in prime_factors.into_iter() {
+            let new_coef = v.max(prime_coeffs[&k]);
+            prime_coeffs.insert(k, new_coef); 
+        }
+        println!("After compound number {} coeffs of prime factors: {:?}", cp, prime_coeffs);
+    }
+
+    let result = prime_coeffs.into_iter().map(|(pr, cf)| (pr as u32).pow(cf as u32)).product::<u32>();
+
+    result as usize
+
 }
