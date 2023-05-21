@@ -201,3 +201,11 @@ pub fn smallest_multiple(n: usize) -> usize {
     result as usize
 
 }
+
+// Problem 6: sum square difference
+
+pub fn sum_square_difference(n: u32) -> u32 {
+
+    (n.pow(2) - 1) * (3 * n + 2) * n / 12
+
+}

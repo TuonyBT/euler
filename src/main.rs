@@ -3,6 +3,7 @@ pub use crate::euler::problemss_100::*;
 
 fn main() {
     for n in 10..11 {
+        print!("{}", sum_square_difference(n));
     }
 }
 
@@ -55,6 +56,13 @@ mod tests {
         assert_eq!(smallest_multiple(10), 2520);
         assert_eq!(smallest_multiple(13), 360360);
         assert_eq!(smallest_multiple(20), 232792560);
+    }
+
+    #[test]
+    fn problem_6() {
+        assert_eq!(sum_square_difference(10), 2640);
+        assert_eq!(sum_square_difference(20), 41230);
+        assert_eq!(sum_square_difference(100), 25164150);
     }
 
 }
