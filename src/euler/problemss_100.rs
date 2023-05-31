@@ -1,5 +1,6 @@
+use std::collections::{BTreeMap, BTreeSet, HashSet};
 use itertools::Itertools;
-use std::collections::{BTreeMap, BTreeSet};
+use rand::Rng;
 
 // Problem 1: sum of numbers less than n which are multiples of 3 or 5
 
@@ -97,7 +98,7 @@ pub fn largest_prime_factor(n: usize) -> usize {
     hpf
 }
 
-pub fn sieve_of_eratothsenes(x: usize) -> Vec<usize> {
+pub fn sieve_of_eratothsenes_all(x: usize) -> Vec<usize> {
     let mut sieve = vec![true; x + 1];
     sieve[0] = false;
     sieve[1] = false;
@@ -113,6 +114,26 @@ pub fn sieve_of_eratothsenes(x: usize) -> Vec<usize> {
         };
     }
     let primes = sieve.iter().enumerate().filter(|z| z.1 == &true).map(|z| z.0).collect::<Vec<usize>>();
+    primes
+}
+
+pub fn sieve_of_eratothsenes(x: usize) -> Vec<usize> {
+    let mut sieve = vec![true; (x + 1) / 2];
+    sieve[0] = false;
+//    sieve[1] = false;
+    let mut lp: usize = 3;
+    while lp <= (x as f64).sqrt().floor() as usize {
+        let fnp = lp.pow(2);
+        for idx in (fnp..x + 1).step_by(lp * 2) {
+            sieve[(idx - 1) / 2] = false;
+        }
+        lp = match sieve[(lp - 1) / 2 + 1..].iter().position(|z| z == &true) {
+            Some(y) => (y + (lp - 1) / 2 + 1) * 2 + 1,
+            None => x,
+        };
+    }
+    let mut primes = sieve.iter().enumerate().filter(|z| z.1 == &true).map(|z| z.0 * 2 + 1).collect::<Vec<usize>>();
+    primes.insert(0, 2);
     primes
 
 }
@@ -207,4 +228,58 @@ pub fn smallest_multiple(n: usize) -> usize {
 pub fn sum_square_difference(n: u32) -> u32 {
 // used respective formulae for sum(i) and sum(i_squared), then simplified expression for difference     
     (n.pow(2) - 1) * (3 * n + 2) * n / 12
+}
+
+//  Problem 7: nth_prime
+
+pub fn nth_prime(n: i32) -> i64 {
+    0i64
+} 
+
+//  Wheel sieve
+pub fn wheel(basis: Vec<usize>) -> Vec<bool> {
+    let prod = basis.iter().product();
+    let mut sieve = vec![true; prod];
+    
+    for prime in basis.iter() {
+        for x in 2..prod/prime + 1 {
+            sieve[x * prime - 2] = false;
+        }
+    }
+
+    sieve
+}
+
+
+// Bounds for nth prime
+pub fn nth_prime_bounds(n: i32) -> [i64; 2] {
+    let ln_n = (n as f64).ln();
+    let ln_ln_n = ln_n.ln();
+
+    [((ln_n + ln_ln_n - 1.0) * n as f64).floor() as i64, ((ln_n + ln_ln_n) * n as f64).ceil() as i64]
+} 
+
+
+
+//  Test for probable prime using Fermat primality test
+pub fn fermat_prime(m: i64, k: i32) -> bool {
+    let mut prob_prime = true;
+    let mut rng = rand::thread_rng();
+
+    for _k in 0..k {
+        let mut rems = Vec::<i64>::new();
+        let b: i64 = 2i64 + (rng.gen::<f64>() * (m - 4) as f64 / 1.0) as i64;
+        let mut c: i64 = 1;
+    
+        for _e in 0..m - 1 {
+            c = (b * c) % m;
+            if rems.contains(&c) {break}
+            else {rems.push(c);}
+        }    
+        let period = rems.len() as i64;
+        if  (m - 1) % period != 0 {
+                prob_prime = false;
+        }
+    }
+    prob_prime
 }

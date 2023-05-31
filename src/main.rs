@@ -2,8 +2,15 @@ pub mod euler;
 pub use crate::euler::problemss_100::*;
 
 fn main() {
-    for n in 10..11 {
-        print!("{}", sum_square_difference(n));
+
+    for n in 5..6 {
+
+        println!("{:?}", sieve_of_eratothsenes_all(n));
+        println!("{:?}", smallest_multiple(n));
+    }
+
+    for p in sieve_of_eratothsenes(200) {
+//        println!("p: {} is probably prime: {}", p, fermat_prime(p as i32, 3));
     }
 }
 
