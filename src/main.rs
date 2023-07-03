@@ -3,9 +3,9 @@ pub use crate::euler::problemss_100::*;
 
 fn main() {
 
-    for n in 200..201 {
+    for n in 6..7 {
 
-            println!("n: {}", wheel_sieve(n));
+            println!("n: {:?}", nth_prime(10001));
     }
 
 }
