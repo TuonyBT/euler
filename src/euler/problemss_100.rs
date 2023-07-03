@@ -117,10 +117,11 @@ pub fn sieve_of_eratothsenes_all(x: usize) -> Vec<usize> {
     primes
 }
 
+//  This sieve tests only odd numbers
 pub fn sieve_of_eratothsenes(x: usize) -> Vec<usize> {
     let mut sieve = vec![true; (x + 1) / 2];
     sieve[0] = false;
-//    sieve[1] = false;
+
     let mut lp: usize = 3;
     while lp <= (x as f64).sqrt().floor() as usize {
         let fnp = lp.pow(2);

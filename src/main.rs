@@ -3,15 +3,11 @@ pub use crate::euler::problemss_100::*;
 
 fn main() {
 
-    for n in 5..6 {
+    for n in 105..106 {
 
-        println!("{:?}", sieve_of_eratothsenes_all(n));
-        println!("{:?}", smallest_multiple(n));
+        println!("{:?}", sieve_of_eratothsenes(n));
     }
 
-    for p in sieve_of_eratothsenes(200) {
-//        println!("p: {} is probably prime: {}", p, fermat_prime(p as i32, 3));
-    }
 }
 
 
