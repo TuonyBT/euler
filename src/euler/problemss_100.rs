@@ -233,31 +233,45 @@ pub fn sum_square_difference(n: u32) -> u32 {
 
 //  Problem 7: nth_prime
 
-pub fn nth_prime(n: i32) -> i64 {
-    0i64
+pub fn nth_prime(n: i32) -> usize {
+
+    let up = nth_prime_bounds(n)[1];
+    sieve_of_eratothsenes(up).len()
 } 
 
-//  Wheel sieve
-pub fn wheel(basis: Vec<usize>) -> Vec<bool> {
-    let prod = basis.iter().product();
-    let mut sieve = vec![true; prod];
-    
-    for prime in basis.iter() {
-        for x in 2..prod/prime + 1 {
-            sieve[x * prime - 2] = false;
-        }
-    }
+//  Reverse wheel prime finder
+pub fn wheel(n: usize) -> bool {
 
-    sieve
+    let i = n / 30;
+    let j = (n % 30) / 6;
+    let k = ((n % 30) % 6);
+
+    (k == 1 || k == 5 || [2, 3, 5].contains(&n) ) && n > 1 
 }
 
+//  Wheel with sieve applied
+pub fn wheel_sieve(n: usize) -> Vec<usize> {
+
+    let mut primes = vec![2, 3, 5];
+    let spokes = [7, 11, 13, 17, 19, 23, 29, 31];
+
+    let j = (n % 30) / 6;
+    let k = ((n % 30) % 6);
+
+    for i in 0..n / 30 {
+        primes.push(i * 30);
+    }
+
+    primes
+
+} 
 
 // Bounds for nth prime
-pub fn nth_prime_bounds(n: i32) -> [i64; 2] {
+pub fn nth_prime_bounds(n: i32) -> [usize; 2] {
     let ln_n = (n as f64).ln();
     let ln_ln_n = ln_n.ln();
 
-    [((ln_n + ln_ln_n - 1.0) * n as f64).floor() as i64, ((ln_n + ln_ln_n) * n as f64).ceil() as i64]
+    [((ln_n + ln_ln_n - 1.0) * n as f64).floor() as usize, ((ln_n + ln_ln_n) * n as f64).ceil() as usize]
 } 
 
 

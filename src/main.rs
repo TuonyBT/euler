@@ -3,9 +3,9 @@ pub use crate::euler::problemss_100::*;
 
 fn main() {
 
-    for n in 105..106 {
+    for n in 200..201 {
 
-        println!("{:?}", sieve_of_eratothsenes(n));
+            println!("n: {}", wheel_sieve(n));
     }
 
 }
