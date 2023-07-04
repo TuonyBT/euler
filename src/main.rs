@@ -5,7 +5,7 @@ fn main() {
 
     for n in 6..7 {
 
-            println!("n: {:?}", nth_prime(10001));
+            println!("n: {:?}", prime_factor(100));
     }
 
 }
@@ -66,6 +66,15 @@ mod tests {
         assert_eq!(sum_square_difference(10), 2640);
         assert_eq!(sum_square_difference(20), 41230);
         assert_eq!(sum_square_difference(100), 25164150);
+    }
+
+    #[test]
+    fn problem_7() {
+        assert_eq!(nth_prime(6), 13);
+        assert_eq!(nth_prime(10), 29);
+        assert_eq!(nth_prime(100), 541);
+        assert_eq!(nth_prime(1000), 7919);
+        assert_eq!(nth_prime(10001), 104743);
     }
 
 }

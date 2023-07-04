@@ -123,7 +123,7 @@ pub fn sieve_of_eratothsenes(x: usize) -> Vec<usize> {
     sieve[0] = false;
 
     let mut lp: usize = 3;
-    while lp <= (x as f64).sqrt().floor() as usize {
+    while lp * lp <= x {
         let fnp = lp.pow(2);
         for idx in (fnp..x + 1).step_by(lp * 2) {
             sieve[(idx - 1) / 2] = false;
@@ -233,14 +233,16 @@ pub fn sum_square_difference(n: u32) -> u32 {
 
 //  Problem 7: nth_prime
 
-pub fn nth_prime(n: usize) -> [usize; 2] {
+pub fn nth_prime(n: usize) -> usize {
 
     let up = nth_prime_bounds(n)[1];
-    [sieve_of_eratothsenes(up)[n - 1], wheel_sieve(up)[n - 1]]
+    wheel_sieve(up)[n - 1]
 
 } 
 
 //  Reverse wheel prime finder
+//  Will mark as prime any number divisible by 7 and up - requires finessing
+
 pub fn wheel(n: usize) -> bool {
 
     let i = n / 30;
@@ -252,6 +254,8 @@ pub fn wheel(n: usize) -> bool {
 
 //  Wheel with sieve applied
 pub fn wheel_sieve(n: usize) -> Vec<usize> {
+
+    let mut sieve = vec![true; (n / 15 + 1) * 4 ];
 
     let mut primes = vec![2, 3, 5];
     let spokes = [7, 11, 13, 17, 19, 23, 29, 31];
@@ -265,7 +269,7 @@ pub fn wheel_sieve(n: usize) -> Vec<usize> {
     let tests = primes.clone();
     for test in tests {
         if test * test > n {break}
-        primes = primes.into_iter().filter(|z| z / test == 1 || z % test != 0).collect::<Vec<usize>>();
+        primes = primes.into_iter().filter(|z| z == &test || z % test != 0).collect::<Vec<usize>>();
     }
 
     primes
@@ -308,4 +312,38 @@ pub fn fermat_prime(m: i64, k: i32) -> bool {
         }
     }
     prob_prime
+}
+
+//  Prime factor finder ported from Jim Randell's Enigma Python library
+//  Wheel factorisation using wheels of circumference 30
+pub fn prime_factor(m: usize) -> Vec<[usize; 2]> {
+    let mut factors: Vec<[usize; 2]> = Vec::new();
+    if m > 1 {
+        let mut n = m;
+        let mut i = 2;
+        let ds = [1, 2, 2, 4, 2, 4, 2, 4, 6, 2, 6];
+        let js = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 3];
+        let mut j = 0;
+        while i*i <= n {
+            let mut e = 0;
+            loop {
+                let (d, r) = (&n/&i, &n%&i);
+
+                if r > 0 {
+                    break;
+                }
+            e += 1;
+            n = d;
+            }
+            if e > 0 {
+                factors.push([i, e]);
+            }
+            i += ds[j];
+            j = js[j];
+        }
+        if n > 1 {
+            factors.push([n, 1]);
+        }
+    }
+    factors
 }
