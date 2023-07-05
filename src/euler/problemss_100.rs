@@ -1,6 +1,10 @@
-use std::collections::{BTreeMap, BTreeSet, HashSet};
+use std::collections::{BTreeMap, BTreeSet};
 use itertools::Itertools;
 use rand::Rng;
+
+use std::fs::File;
+use std::io::{self, BufRead};
+use std::path::Path;
 
 // Problem 1: sum of numbers less than n which are multiples of 3 or 5
 
@@ -240,22 +244,8 @@ pub fn nth_prime(n: usize) -> usize {
 
 } 
 
-//  Reverse wheel prime finder
-//  Will mark as prime any number divisible by 7 and up - requires finessing
-
-pub fn wheel(n: usize) -> bool {
-
-    let i = n / 30;
-    let j = n % 30 / 6;
-    let k = (n % 30) % 6;
-
-    (k == 1 || k == 5 || [2, 3, 5].contains(&n) ) && n > 1 
-}
-
 //  Wheel with sieve applied
 pub fn wheel_sieve(n: usize) -> Vec<usize> {
-
-    let mut sieve = vec![true; (n / 15 + 1) * 4 ];
 
     let mut primes = vec![2, 3, 5];
     let spokes = [7, 11, 13, 17, 19, 23, 29, 31];
@@ -346,4 +336,44 @@ pub fn prime_factor(m: usize) -> Vec<[usize; 2]> {
         }
     }
     factors
+}
+
+//  Problem 8: largest product in a series
+
+pub fn largest_product_in_series(n: usize) -> u64 {
+
+//  Presumes that the series is stored in a text file, which can be read line by line
+//  First set up a vector into which we read the series
+
+    let mut series = Vec::<u32>::new();
+
+    if let Ok(lines) = read_lines("./files/thousand_digits.txt") {
+        // Consumes the iterator, returns an (Optional) String
+        for line in lines {
+            if let Ok(ip) = line {
+                series.extend(ip.chars().map(|c| c.to_digit(10).unwrap()));
+            }
+        }
+    }
+
+//  Presuming that the largest product is greater than zero, ignore all sub-series that contain a zero
+    let threshold: u32 = 0;
+
+//  Loop over each digit in the series, skip if it is zero, or find the product of the corresponding sub-series
+    let max_to_date = series[0..(series.len() - n)].iter().enumerate()
+                                                .filter(|(_idx, &root)| root > threshold)
+                                                .map(|(idx, _root)| &series[idx..(idx + n)])
+                                                .fold(0, |mx, x| mx.max(x.iter().map(|&z| z as u64).product::<u64>()));                                           
+
+    max_to_date
+
+}
+
+//  Read a text file line by line
+// The output is wrapped in a Result to allow matching on errors
+// Returns an Iterator to the Reader of the lines of the file.
+pub fn read_lines<P>(filename: P) -> io::Result<io::Lines<io::BufReader<File>>>
+where P: AsRef<Path>, {
+    let file = File::open(filename)?;
+    Ok(io::BufReader::new(file).lines())
 }

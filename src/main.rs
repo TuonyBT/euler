@@ -3,9 +3,9 @@ pub use crate::euler::problemss_100::*;
 
 fn main() {
 
-    for n in 6..7 {
+    for _n in 6..7 {
 
-            println!("n: {:?}", prime_factor(100));
+            println!("n: {:?}", largest_product_in_series(13));
     }
 
 }
@@ -77,5 +77,11 @@ mod tests {
         assert_eq!(nth_prime(10001), 104743);
     }
 
+
+    #[test]
+    fn problem_8() {
+        assert_eq!(largest_product_in_series(4), 5832);
+        assert_eq!(largest_product_in_series(13), 23514624000);
+    }
 }
 
