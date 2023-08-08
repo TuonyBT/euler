@@ -338,6 +338,22 @@ pub fn prime_factor(m: usize) -> Vec<[usize; 2]> {
     factors
 }
 
+pub fn hcf(x: usize, y: usize) -> u32 {
+    let x_facs = prime_factor(*x);
+    let y_facs = prime_factor(*y);
+
+//    let cfs = x_facs.iter().cartesian_product(&y_facs)
+//                                                    .filter(|(x, y)| x[0] == y[0])
+//                                                    .map(|(x, y)|[x[0], x[1].min(y[1])])
+//                                                    .collect::<Vec<[usize; 2]>>();
+//    let hcf = cfs.iter().map(|z| (z[0] as u32).pow(z[1] as u32)).product::<u32>();
+
+    x_facs.iter().cartesian_product(&y_facs).filter(|(x, y)| x[0] == y[0])
+                                            .map(|(x, y)|[(x[0] as u32).pow(x[1].min(y[1] as u32))])
+                                            .product::<u32>()
+
+}
+
 //  Problem 8: largest product in a series
 
 pub fn largest_product_in_series(n: usize) -> u64 {
@@ -360,11 +376,29 @@ pub fn largest_product_in_series(n: usize) -> u64 {
     let threshold: u32 = 0;
 
 //  Loop over each digit in the series, skip if it is zero, or find the product of the corresponding sub-series
-    let max_to_date = series[0..(series.len() - n)].iter().enumerate()
-                                                .filter(|(_idx, &root)| root > threshold)
-                                                .map(|(idx, _root)| &series[idx..(idx + n)])
-                                                .fold(0, |mx, x| mx.max(x.iter().map(|&z| z as u64).product::<u64>()));                                           
+//    let max_to_date = series[0..(series.len() - n)].iter().enumerate()
+//                                                .filter(|(_idx, &root)| root > threshold)
+//                                                .map(|(idx, _root)| &series[idx..(idx + n)])
+//                                                .fold(0, |mx, x| mx.max(x.iter().map(|&z| z as u64).product::<u64>()));                                           
 
+
+//  Alternative approach skipping over all zeroes
+//  Cannot easily use iter() functionality so broken out into while loop that allows us to skip
+
+    let mut i:usize = 0;
+    let mut mx:u64 = 0;
+
+    while i < series.len() - n    {
+        let (zero, prod) = match &series[i..(i + n)].iter().rev().position(|&x| x == 0) {
+            Some(z) => (n - z, mx),
+            _ => (1, series[i..(i + n)].iter().map(|&z| z as u64).product::<u64>()),
+        };
+        mx = mx.max(prod);
+        println!("{}: {:?} {}", i, &series[i..(i + n)], zero);
+        i += zero;
+    }
+
+    let max_to_date = mx;
     max_to_date
 
 }
