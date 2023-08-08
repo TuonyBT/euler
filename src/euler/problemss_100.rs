@@ -414,15 +414,15 @@ where P: AsRef<Path>, {
 
 //  Problem 9: Pythagorean triad summing to 1000
 
-pub fn pythag_triad_sum(n: u32) -> BTreeSet<[u32; 3]> {
+pub fn special_pythagorean_triplet(n: u32) -> BTreeSet<u32> {
 
-    let mut triplets = BTreeSet::<[u32; 3]>::new();
+    let mut triplets = BTreeSet::<u32>::new();
 
-    for c in (n / 3).. n - 2 {
+    for c in (n / 3).. (n / 2) {
         for b in ((n - c) / 2 + 1)..(n - c) {
             let a = n - c - b;
             if a.pow(2) + b.pow(2) == c.pow(2) {
-                triplets.insert([a, b, c]);
+                triplets.insert([a, b, c].iter().product());
             }
         }
     }

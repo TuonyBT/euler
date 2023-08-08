@@ -1,11 +1,11 @@
 pub mod euler;
 pub use crate::euler::problemss_100::*;
-
+use std::collections::BTreeSet;
 fn main() {
 
     for n in 1000..1001 {
 
-            println!("n: {} Pythagorean triangle {:?}", n, pythag_triad_sum(n));
+            println!("n: {} Pythagorean triangle {:?}", n, special_pythagorean_triplet(n));
     }
 
 }
@@ -82,6 +82,13 @@ mod tests {
     fn problem_8() {
         assert_eq!(largest_product_in_series(4), 5832);
         assert_eq!(largest_product_in_series(13), 23514624000);
+    }
+
+    #[test]
+    fn problem_9() {
+        assert_eq!(special_pythagorean_triplet(24), BTreeSet::from([480]));
+        assert_eq!(special_pythagorean_triplet(120), BTreeSet::from([49920, 55080, 60000]));
+        assert_eq!(special_pythagorean_triplet(1000), BTreeSet::from([31875000]));
     }
 }
 
