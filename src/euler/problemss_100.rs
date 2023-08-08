@@ -339,8 +339,8 @@ pub fn prime_factor(m: usize) -> Vec<[usize; 2]> {
 }
 
 pub fn hcf(x: usize, y: usize) -> u32 {
-    let x_facs = prime_factor(*x);
-    let y_facs = prime_factor(*y);
+    let x_facs = prime_factor(x);
+    let y_facs = prime_factor(y);
 
 //    let cfs = x_facs.iter().cartesian_product(&y_facs)
 //                                                    .filter(|(x, y)| x[0] == y[0])
@@ -349,7 +349,7 @@ pub fn hcf(x: usize, y: usize) -> u32 {
 //    let hcf = cfs.iter().map(|z| (z[0] as u32).pow(z[1] as u32)).product::<u32>();
 
     x_facs.iter().cartesian_product(&y_facs).filter(|(x, y)| x[0] == y[0])
-                                            .map(|(x, y)|[(x[0] as u32).pow(x[1].min(y[1] as u32))])
+                                            .map(|(x, y)|(x[0] as u32).pow((x[1] as u32).min(y[1] as u32)))
                                             .product::<u32>()
 
 }
@@ -373,7 +373,7 @@ pub fn largest_product_in_series(n: usize) -> u64 {
     }
 
 //  Presuming that the largest product is greater than zero, ignore all sub-series that contain a zero
-    let threshold: u32 = 0;
+//    let threshold: u32 = 0;
 
 //  Loop over each digit in the series, skip if it is zero, or find the product of the corresponding sub-series
 //    let max_to_date = series[0..(series.len() - n)].iter().enumerate()
@@ -411,3 +411,39 @@ where P: AsRef<Path>, {
     let file = File::open(filename)?;
     Ok(io::BufReader::new(file).lines())
 }
+
+//  Problem 9: Pythagorean triad summing to 1000
+
+pub fn pythag_triad_sum(n: u32) -> BTreeSet<[u32; 3]> {
+
+    let mut triplets = BTreeSet::<[u32; 3]>::new();
+
+    for c in (n / 3).. n - 2 {
+        for b in ((n - c) / 2 + 1)..(n - c) {
+            let a = n - c - b;
+            if a.pow(2) + b.pow(2) == c.pow(2) {
+                triplets.insert([a, b, c]);
+            }
+        }
+    }
+    triplets
+}
+
+//  Return all Pythagorean triplets with hypotenuse n
+pub fn pythag_triplets(c: u32) -> BTreeSet<[u32; 3]> {
+
+    let mut triplets = BTreeSet::<[u32; 3]>::new();
+    let mut b = c - 1;
+    let mut a = 1u32;
+
+    while a < b {
+        let a_sq = c.pow(2) - b.pow(2);
+        let a_ = (a_sq as f64).sqrt();
+        a = a_.floor() as u32;
+        if a.pow(2) + b.pow(2) == c.pow(2) {
+            triplets.insert([a, b, c]);
+        }
+        b -= 1;
+    }
+    triplets
+} 

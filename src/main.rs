@@ -3,9 +3,9 @@ pub use crate::euler::problemss_100::*;
 
 fn main() {
 
-    for _n in 6..7 {
+    for n in 1000..1001 {
 
-            println!("n: {:?}", largest_product_in_series(13));
+            println!("n: {} Pythagorean triangle {:?}", n, pythag_triad_sum(n));
     }
 
 }
